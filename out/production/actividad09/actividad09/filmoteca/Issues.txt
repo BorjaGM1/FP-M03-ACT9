@@ -1,0 +1,86 @@
+java.sql.SQLException: No suitable driver found for jdbc:mysql://localhost/
+Solución: https://www.jetbrains.com/help/idea/working-with-module-dependencies.html#remove-dependency
+Problema con la zona horaria
+Solucion: update all (mysql, workbench, driver), reconfigurar el .jar del driver, nuevo data-source y driver, añadir server time zone en la url
+
+¿Por qué no puedo meter 2 create table dentro del mismo string query?
+
+
+String gen = (Objects.requireNonNull(genre.getSelectedItem())).toString();
+            int finalN = n3;
+            combo.addActionListener(e -> {
+                genre.setEnabled(false);
+                listar.addActionListener(e1 -> {
+                    try {
+                        Connection conn1;
+                            conn1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/?useSSL=true&useTimezone=true&serverTimezone=UTC&useServerPrepStmts=true","root","");
+                        Statement stat1;
+                            stat1 = conn1.createStatement();
+                        ResultSet rs1;
+                            rs1 = stat1.executeQuery("select * from mibbdd.pelicula where director="+finalN);
+                        ArrayList<String> titulos = new ArrayList<>();
+                        ArrayList<String> paises = new ArrayList<>();
+                        ArrayList<String> duraciones = new ArrayList<>();
+                        ArrayList<String> generos = new ArrayList<>();
+                        ArrayList<Integer> directores = new ArrayList<>();
+                                while (rs1.next()) {
+                                    titulos.add(rs1.getString(2));
+                                    directores.add(rs1.getInt("director"));
+                                    paises.add(rs1.getString(4));
+                                    duraciones.add(rs1.getString(5));
+                                    generos.add(rs1.getString(6));
+                                }
+                        title.setText(titulos.get(0));
+                        rs1.close();
+                        stat.close();
+                        conn.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+            });
+            genre.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    combo.setEnabled(false);
+                    listar.addActionListener(e1 -> {
+                        Connection conn = null;
+                        try {
+                            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?useSSL=true&useTimezone=true&serverTimezone=UTC&useServerPrepStmts=true","root","");
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        Statement stat = null;
+                        try {
+                            assert conn != null;
+                            stat = conn.createStatement();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        ResultSet rs = null;
+                        try {
+                            assert stat != null;
+                            rs = stat.executeQuery("select * from mibbdd.pelicula where genero="+gen);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        ArrayList<String> titulos = new ArrayList<>();
+                        ArrayList<String> paises = new ArrayList<>();
+                        ArrayList<String> duraciones = new ArrayList<>();
+                        ArrayList<String> generos = new ArrayList<>();
+                        ArrayList<Integer> directores = new ArrayList<>();
+                        int i = 0;
+                            try {
+                                while (rs.next()){
+                                    titulos.add(rs.getString(2));
+                                    directores.add(rs.getInt("director"));
+                                    paises.add(rs.getString(4));
+                                    duraciones.add(rs.getString(5));
+                                    generos.add(rs.getString(6));}
+                            } catch (SQLException ex) {
+                                ex.printStackTrace();
+                            }
+                    });
+                }
+            });
